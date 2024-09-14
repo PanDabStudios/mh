@@ -1,2 +1,4 @@
 *.jar
 */
+__pycache__/
+BuildTools.log.txt
