@@ -3,3 +3,4 @@
 __pycache__/
 BuildTools.log.txt
 *.zip
+*.service

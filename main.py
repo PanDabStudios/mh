@@ -20,13 +20,8 @@ operations = [
     Operation("configure", "Accepts eula.txt, enables rcon and opens server.properties", lambda: functions.configure()),
     Operation("crService", "Creates the systemd service for the minecraft server, so that it starts with the system", lambda: functions.crService()),
     Operation("firewall", "Helps  you setup the firewall", lambda: functions.firewall()),
-    Operation("start", "Starts the minecraft server", lambda: functions.start()),
-    Operation("enable", "Enables the service (so that it starts with the system)", lambda: functions.enable()),
-    Operation("disable", "Disables the seriver (so that is doesn't start with the sistem)", lambda: functions.disable()),
-    Operation("backup", "Creates a backup of the world", lambda: functions.backup()),
     Operation("autoBackup", "Setups a cronjob to automatically backup", lambda: functions.autoBackup()),
-    Operation("logs", "Shows server logs", lambda: functions.logs()),
-    Operation("console", "Allows to run server commands", lambda: functions.console()),
+    Operation("postInstall", "Basic commands and usage after setup.")
     Operation("help", "Shows this list", lambda: help())
 ]
 

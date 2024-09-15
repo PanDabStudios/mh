@@ -47,7 +47,86 @@ Debian: sudo apt-get install git openjdk-{jdkVersion}-jdk-headless""")
         subprocess.run('sudo cp server.jar /opt/minecraft/server', shell=True)
 
 def configure():
-    input("Open a terminal, tipe in 'sudo su minecraft - ', then cd ~/server, and then ls. There should be a server.jar file in the ls results. If it is not there, re run download.")
-    input("If it is there, run the server with the command 'java -Xmx1024M -Xms512M -jar server.jar nogui'. This should setup a few things for us.")
-    input("Now there should be a lot of new files, two of which are named 'server.properties' and 'eula.txt'. We will have to setup each one. Lets start with eula.txt.")
-    
+    steps =["Open a terminal, tipe in 'sudo su minecraft - ', then cd ~/server, and then ls. There should be a server.jar file in the ls results. If it is not there, re run download.",
+    "If it is there, run the server with the command 'java -Xmx1024M -Xms512M -jar server.jar nogui'. This should setup a few things for us.",
+    "Now there should be a lot of new files, two of which are named 'server.properties' and 'eula.txt'. We will have to setup each one. Lets start with eula.txt.",
+    "Run nano eula.txt. This will open the eula.txt file in the nano text editor in your pc. edit the line that says eula=false, and change it to eula=true. You can do so using the arrow keys in your keyboard, pressing ctrl + o to write, and the ctrl + x to exit.",
+    "Next we have to setup server.properties. Open it using nano server.properties. Here you can configure a lot of things, read all the options and change them as you like, but make sure to know what it does before changing it. There are some options that are required to use with this script.",
+    "Change enable-rcon to true, set rcon.port to 25575, and set rcon.password. Make sure it is a good one, as having this password will allow people to run commands as an administrator on your server.",
+    "Done. Now to setting up the service. \nTip: if you want cracked minecraft support, disable 'online-mode'.",
+    ]
+    for i in steps:
+        input(i)
+
+def crService():
+    mem = input("How much memory should the minecraft process use (in GB)? Tip: this should NOT be the entire memory of you system.")
+    password = input("What password did you choose? (This will be enbeded into the servide to stop gracefully)")
+    while int(mem) < 0:
+        mem = input("How much memory should the minecraft process use (in GB)?Tip: this should NOT be the entire memory of you system.")
+    service = f"""
+[Unit]
+
+Description=Minecraft Server
+
+After=network.target
+
+[Service]
+
+User=minecraft
+
+Nice=1
+
+KillMode=none
+
+SuccessExitStatus=0 1
+
+ProtectHome=true
+
+ProtectSystem=full
+
+PrivateDevices=true
+
+NoNewPrivileges=true
+
+WorkingDirectory=/opt/minecraft/server
+
+ExecStart=/usr/bin/java -Xmx{mem}G -Xms512M -jar server.jar nogui
+
+ExecStop=/opt/minecraft/tools/mcrcon -H 127.0.0.1 -P 25575 -p {password} stop
+
+[Install]
+
+WantedBy=multi-user.target
+"""
+    with open("minecraft.service", "w") as file:
+    file.write(content)
+    subprocess.run(["sudo cp minecraft.service /etc/systemd/system/minecraft.service"], shell=True)
+    print('Done! Now you can start minecraft with systemctl start minecraft, stop it with systemctl stop minecraft, and make it start with your pc, using systemctl (dis)enable minecraft')
+    print('to see logs you can run journalctl -u minecraft.service -b')
+    print('to see status, you can run systemctl status minecraft')
+    print('and lastly, to run commands, you can use mcrcon. Look into installing it system-wide, but for now you can just run /opt/minecraft/mcrcon -H 127.0.0.1 -P 25575 -p (password). 127.0.0.1 should be switched with your servers ip addres if running from another pc.')
+    return 0
+
+def firewall():
+    steps = ["To setup the firewall, look into your distros wiki, but the specific settings for minecraft, are 25565 allow tcp and udp, and 25575 allow tcp and udp. You may want to allow 22 for ssh, or 445 for samba, but make sure that you know what you are doing."]
+
+    for i in steps
+        input(i)
+    return 0
+
+
+def postInstall():
+    print("""
+Here is how to run your server:
+start: systemctl start minecraft
+stop: systemctl stop minecraft
+enable: systemctl enable minecraft. Starts minecraft automatically with pc
+disable: systemctl disable minecraft. Stops minecraft from starting with pc
+logs: you can see previous logs in /opt/minecraft/server/logs. To see current logs, run journalctl -u minecraft.service -b
+console: to run console commands, run /opt/minecraft/tools/mcrcon -H (host) -P (port) -p (password) [command]. Host is the servers ip (127.0.0.1 if its your local machine), port is the port which you setup, 25575 by default, and command is the command the server should run, you can keep that empty to run multiple commands.
+if you install mcrcon system-wide, you can remove the /opt/minecraft/tools from the start of the command.
+backup: to backup your world, run sudo mkdir /opt/minecraft/server/backups (creates backups folder, first time only), then cp /opt/minecraft/server/world /opt/minecraft/server/backups/(backup name)/. This won't compress it at all, and it will be acessible as a normal minecraft world.
+backing it up to other machines, cloud or otherwise, is also a good idea, but for that you are on your own.
+""")
+
+#password: abc123
