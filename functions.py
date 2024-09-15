@@ -1,32 +1,23 @@
 import subprocess
 import jardownloader
 import os
-import pwd
 
 def all():
     print("exec")
 
 def crUser():
-  print("You need root permission to create an user:")
-  # Check for root privileges before attempting creation
-  if os.geteuid() == 0:
-      # Use pwd.getpwnam to check if user exists
-      if not pwd.getpwnam("minecraft"):
-          # Use os.makedirs to create directories with proper permissions
-          os.makedirs("/opt/minecraft", mode=0o750, exist_ok=True)
-          # Use pwd.addUser with desired options
-          pwd.addUser("minecraft", shell="/bin/bash", homedir="/opt/minecraft")
-      else:
-          print("User 'minecraft' already exists.")
-  else:
-      print("Please run as root.")
+    print("You need root permission to create an user:")
+    subprocess.run("sudo useradd -r -m -U -d /opt/minecraft -s /bin/bash minecraft", shell=True)
+    return 0
 
 def crFolders():
     subprocess.run("sudo su minecraft -c 'mkdir -p ~/{backups,tools,server}'", shell=True)
+    return 0
 
 def mcrcon():
     print('Go to https://github.com/Tiiffi/mcrcon/releases/ and download the latest version compatible with your sistem. Unzip the .tar.gz with the command tar -xvzf (filename). Copy the mcrcon file into /opt/minecraft/tools, and make it executable with chmod +x mcrcon.')
-    
+    return 0
+
 def download():
     print("""There are many minecraft server versions, and softwares. Which one do you want? (type in the code)
     1. Vanilla official server, developed by mojang.
@@ -54,3 +45,9 @@ Debian: sudo apt-get install git openjdk-{jdkVersion}-jdk-headless""")
     print("make sure you are using java JDK, not JRE")
     if jardownloader.download(chosen, version, jdkVersion) == 0:
         subprocess.run('sudo cp server.jar /opt/minecraft/server', shell=True)
+
+def configure():
+    input("Open a terminal, tipe in 'sudo su minecraft - ', then cd ~/server, and then ls. There should be a server.jar file in the ls results. If it is not there, re run download.")
+    input("If it is there, run the server with the command 'java -Xmx1024M -Xms512M -jar server.jar nogui'. This should setup a few things for us.")
+    input("Now there should be a lot of new files, two of which are named 'server.properties' and 'eula.txt'. We will have to setup each one. Lets start with eula.txt.")
+    

@@ -50,6 +50,7 @@ def download(software, wantedVersion, jdkVersion):
                 subprocess.run(["cp", f"craftbukkit-{wantedVersion}.jar", "server.jar"])
             else:
                 subprocess.run(["java", "-jar", "BuildTools.jar", "--final-name", "server.jar", "--rev", wantedVersion])
+                subprocess.run(["cp", f"work/server-{wantedVersion}.jar", "server.jar"])
         except:
             print("there was an error compiling, see the compiling wiki, and copy the desired server.jar into /opt/minecraft/server. Make sure it is name exactly 'server.jar'.")
             print("The wiki: https://www.spigotmc.org/wiki/buildtools/#issues-and-common-concerns")
