@@ -99,7 +99,7 @@ ExecStop=/opt/minecraft/tools/mcrcon -H 127.0.0.1 -P 25575 -p {password} stop
 WantedBy=multi-user.target
 """
     with open("minecraft.service", "w") as file:
-    file.write(content)
+        file.write(content)
     subprocess.run(["sudo cp minecraft.service /etc/systemd/system/minecraft.service"], shell=True)
     print('Done! Now you can start minecraft with systemctl start minecraft, stop it with systemctl stop minecraft, and make it start with your pc, using systemctl (dis)enable minecraft')
     print('to see logs you can run journalctl -u minecraft.service -b')
@@ -110,7 +110,7 @@ WantedBy=multi-user.target
 def firewall():
     steps = ["To setup the firewall, look into your distros wiki, but the specific settings for minecraft, are 25565 allow tcp and udp, and 25575 allow tcp and udp. You may want to allow 22 for ssh, or 445 for samba, but make sure that you know what you are doing."]
 
-    for i in steps
+    for i in steps:
         input(i)
     return 0
 
@@ -131,6 +131,17 @@ backing it up to other machines, cloud or otherwise, is also a good idea, but fo
 
 def autoBackup():
     print("So you want to setup auto backups? Let's go!")
-    print("First make sure you have cron installed.")
-
-#password: abc123
+    print("First make sure you have cron installed. You can do so by running crond, if it says it cant open a file, that is good. If it says that crond is not a file or directory, that means you have to install it.")
+    print("Ok, now lets create a bash script to be run periodically. Go to /opt/minecraft/tools and create a backup.sh file.")
+    print("inside it, write the following lines:")
+    print("""
+systemctl stop minecraft
+mkdir /opt/minecraft/server/backup/$(date)
+cp /opt/minecraft/server/level /opt/minecraft/server/backup/$(date)
+systemctl start minecraft
+    """)
+    print("this will stop and restart the server, as without doing that, some chunks may be saved badly.")
+    print("now use chmod +x backup.sh to make it executable.")
+    input("press enter when you  have done the instructions above.")
+    print("""
+Ok, now lets create a cronjob, to do that, simply copy the backup.sh file into /etc/crond.daily, and make sure it is executeable.""")

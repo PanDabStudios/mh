@@ -21,7 +21,7 @@ operations = [
     Operation("crService", "Creates the systemd service for the minecraft server, so that it starts with the system", lambda: functions.crService()),
     Operation("firewall", "Helps  you setup the firewall", lambda: functions.firewall()),
     Operation("autoBackup", "Setups a cronjob to automatically backup", lambda: functions.autoBackup()),
-    Operation("postInstall", "Basic commands and usage after setup.")
+    Operation("postInstall", "Basic commands and usage after setup", lambda: functions.postInstall()),
     Operation("help", "Shows this list", lambda: help())
 ]
 
