@@ -129,4 +129,8 @@ backup: to backup your world, run sudo mkdir /opt/minecraft/server/backups (crea
 backing it up to other machines, cloud or otherwise, is also a good idea, but for that you are on your own.
 """)
 
+def autoBackup():
+    print("So you want to setup auto backups? Let's go!")
+    print("First make sure you have cron installed.")
+
 #password: abc123

@@ -1,4 +1,2 @@
 termcolor
-requests
-urlib.request
 re
