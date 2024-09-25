@@ -30,4 +30,10 @@ There are 3 .py files, each of them doing a specific task.
 
 There are some desing decisions which im not proud of, I would much rather have it all be automaticall instead of walking through the process, but I decided that it would be easier for myself, and better for the end user, for them to actually walk through all the steps, and understand most to all of them instead of having to create another entire interface for just running it.
 
-## 
+## Future of the project:
+
+I may continue developing this project to work in more operating sistems, and maybe actually make it all autonomous, who knows, it depends on my free time, which I currently do not have a lot of.
+
+## Sources:
+
+This entire script is based on this post in the shells.com website: https://www.shells.com/l/en-US/tutorial/0-A-Guide-to-Installing-a-Minecraft-Server-on-Linux-Ubuntu , and the arch wiki: https://wiki.archlinux.org
