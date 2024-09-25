@@ -12,7 +12,7 @@ class Operation:
         return f"{colored(self.name,'blue', attrs=['bold'])}: {self.description}"
 
 operations = [
-    Operation("all", "Execute all operations in order", lambda: functions.all()),
+    Operation("all", "Execute all operations in order", lambda: all()),
     Operation("crUser", "Create the Minecraft user and set its home folder", lambda: functions.crUser()),
     Operation("crFolders", "Creates the folder structure in /opt/minecraft", lambda: functions.crFolders()),
     Operation("mcrcon", "Helper to install mcrcon", lambda: functions.mcrcon()),
@@ -31,6 +31,13 @@ def help():
 
 Operations:
 {'\n'.join(str(op) for op in operations)}""")
+
+def all():
+    pad = 12
+    for op in operations:
+        if not op.name == 'all':
+            jump = pad - len(op.name)
+            print(f" {colored('------------------', attrs=['bold'])} {colored('Now running: ', 'blue')} {op.name} {' ' * jump} {colored('--------------------------------', attrs=['bold'])}")
 
 if len(sys.argv) > 1:
     operation_name = sys.argv[1]

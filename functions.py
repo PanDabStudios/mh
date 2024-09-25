@@ -1,16 +1,7 @@
 import subprocess
 import jardownloader
 import os
-
-def all():
-    crUser()
-    crFolders()
-    mcrcon()
-    download()
-    configure()
-    crService()
-    firewall()
-    autoBackup()
+from termcolor import colored
     
 
 def crUser():
@@ -67,10 +58,10 @@ def configure():
         input(i)
 
 def crService():
-    mem = input("How much memory should the minecraft process use (in GB)? Tip: this should NOT be the entire memory of you system.")
-    password = input("What password did you choose? (This will be enbeded into the servide to stop gracefully)")
-    while int(mem) < 0:
-        mem = input("How much memory should the minecraft process use (in GB)?Tip: this should NOT be the entire memory of you system.")
+    mem = -1
+    password = input("What password did you choose? (This will be enbeded into the service to stop gracefully)")
+    while mem < 0:
+        mem = int(input("How much memory should the minecraft process use (in GB)?Tip: this should NOT be the entire memory of you system."))
     service = f"""
 [Unit]
 
@@ -107,7 +98,7 @@ ExecStop=/opt/minecraft/tools/mcrcon -H 127.0.0.1 -P 25575 -p {password} stop
 WantedBy=multi-user.target
 """
     with open("minecraft.service", "w") as file:
-        file.write(content)
+        file.write(service)
     subprocess.run(["sudo cp minecraft.service /etc/systemd/system/minecraft.service"], shell=True)
     print('Done! Now you can start minecraft with systemctl start minecraft, stop it with systemctl stop minecraft, and make it start with your pc, using systemctl (dis)enable minecraft')
     print('to see logs you can run journalctl -u minecraft.service -b')
@@ -124,16 +115,16 @@ def firewall():
 
 
 def postInstall():
-    print("""
-Here is how to run your server:
-start: systemctl start minecraft
-stop: systemctl stop minecraft
-enable: systemctl enable minecraft. Starts minecraft automatically with pc
-disable: systemctl disable minecraft. Stops minecraft from starting with pc
-logs: you can see previous logs in /opt/minecraft/server/logs. To see current logs, run journalctl -u minecraft.service -b
-console: to run console commands, run /opt/minecraft/tools/mcrcon -H (host) -P (port) -p (password) [command]. Host is the servers ip (127.0.0.1 if its your local machine), port is the port which you setup, 25575 by default, and command is the command the server should run, you can keep that empty to run multiple commands.
+    print(f"""{boldblue('Here is how to use your server:')}
+
+- {bold('start')}: systemctl start minecraft
+- {bold('stop')}: systemctl stop minecraft
+- {bold('enable')}: systemctl enable minecraft. Starts minecraft automatically with pc
+- {bold('disable')}: systemctl disable minecraft. Stops minecraft from starting with pc
+- {bold('logs')}: you can see previous logs in /opt/minecraft/server/logs. To see current logs, run journalctl -u minecraft.service -b
+- {bold('console')}: to run console commands, run /opt/minecraft/tools/mcrcon -H (host) -P (port) -p (password) [command]. Host is the servers ip (127.0.0.1 if its your local machine), port is the port which you setup, 25575 by default, and command is the command the server should run, you can keep that empty to run multiple commands.
 if you install mcrcon system-wide, you can remove the /opt/minecraft/tools from the start of the command.
-backup: to backup your world, run sudo mkdir /opt/minecraft/server/backups (creates backups folder, first time only), then cp /opt/minecraft/server/world /opt/minecraft/server/backups/(backup name)/. This won't compress it at all, and it will be acessible as a normal minecraft world.
+- {bold('backup')}: to backup your world, run sudo mkdir /opt/minecraft/server/backups (creates backups folder, first time only), then cp /opt/minecraft/server/world /opt/minecraft/server/backups/(backup name)/. This won't compress it at all, and it will be acessible as a normal minecraft world.
 backing it up to other machines, cloud or otherwise, is also a good idea, but for that you are on your own.
 """)
 
@@ -153,3 +144,11 @@ systemctl start minecraft
     input("press enter when you  have done the instructions above.")
     print("""
 Ok, now lets create a cronjob, to do that, simply copy the backup.sh file into /etc/crond.daily, and make sure it is executeable.""")
+
+
+def bold(a):
+    return f"{colored(a, attrs=['bold'])}"
+def blue(a):
+    return f"{colored(a, 'blue')}"
+def boldblue(a):
+    return f"{colored(a, 'blue', attrs=['bold'])}"
