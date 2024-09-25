@@ -3,7 +3,15 @@ import jardownloader
 import os
 
 def all():
-    print("exec")
+    crUser()
+    crFolders()
+    mcrcon()
+    download()
+    configure()
+    crService()
+    firewall()
+    autoBackup()
+    
 
 def crUser():
     print("You need root permission to create an user:")
