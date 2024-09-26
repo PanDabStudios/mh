@@ -38,6 +38,10 @@ def all():
         if not op.name == 'all':
             jump = pad - len(op.name)
             print(f" {colored('------------------', attrs=['bold'])} {colored('Now running: ', 'blue')} {op.name} {' ' * jump} {colored('--------------------------------', attrs=['bold'])}")
+            op.function()
+            a = input("Tipe 1 to continue, 2 to cancel:")
+            if a == 2:
+                return
 
 if len(sys.argv) > 1:
     operation_name = sys.argv[1]

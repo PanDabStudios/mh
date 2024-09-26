@@ -11,6 +11,7 @@ def crUser():
 
 def crFolders():
     subprocess.run("sudo su minecraft -c 'mkdir -p ~/{backups,tools,server}'", shell=True)
+    subprocess.run("sudo chmod 777 /opt/minecraft", shell=True)
     return 0
 
 def mcrcon():
@@ -39,9 +40,9 @@ Note: all server software, except for vanilla is open source.""")
     print(f"""Arch: sudo pacman -S jdk{jdkVersion}-openjdk git
 Ubuntu: sudo apt instal git openjdk-{jdkVersion}-jdk-headless
 Debian: sudo apt-get install git openjdk-{jdkVersion}-jdk-headless""")
-    print("If you have already downloaded it, and it is saying that you still have to install, please look into switching java versions, and enable the required version.")
-    print("in arch linux, install java-runtime-common and run archlinux-java set <JAVA_ENV_NAME>")
-    print("make sure you are using java JDK, not JRE")
+    print("""If you have already downloaded it, and it is saying that you still have to install, please look into switching java versions, and enable the required version.
+"in arch linux, install java-runtime-common and run archlinux-java set <JAVA_ENV_NAME>
+"make sure you are using java JDK, not JRE""")
     if jardownloader.download(chosen, version, jdkVersion) == 0:
         subprocess.run('sudo cp server.jar /opt/minecraft/server', shell=True)
 
@@ -100,10 +101,10 @@ WantedBy=multi-user.target
     with open("minecraft.service", "w") as file:
         file.write(service)
     subprocess.run(["sudo cp minecraft.service /etc/systemd/system/minecraft.service"], shell=True)
-    print('Done! Now you can start minecraft with systemctl start minecraft, stop it with systemctl stop minecraft, and make it start with your pc, using systemctl (dis)enable minecraft')
-    print('to see logs you can run journalctl -u minecraft.service -b')
-    print('to see status, you can run systemctl status minecraft')
-    print('and lastly, to run commands, you can use mcrcon. Look into installing it system-wide, but for now you can just run /opt/minecraft/mcrcon -H 127.0.0.1 -P 25575 -p (password). 127.0.0.1 should be switched with your servers ip addres if running from another pc.')
+    print("""Done! Now you can start minecraft with systemctl start minecraft, stop it with systemctl stop minecraft, and make it start with your pc, using systemctl (dis)enable minecraft
+to see logs you can run journalctl -u minecraft.service -b
+to see status, you can run systemctl status minecraft
+and lastly, to run commands, you can use mcrcon. Look into installing it system-wide, but for now you can just run /opt/minecraft/mcrcon -H 127.0.0.1 -P 25575 -p (password). 127.0.0.1 should be switched with your servers ip addres if running from another pc.""")
     return 0
 
 def firewall():
@@ -129,21 +130,20 @@ backing it up to other machines, cloud or otherwise, is also a good idea, but fo
 """)
 
 def autoBackup():
-    print("So you want to setup auto backups? Let's go!")
-    print("First make sure you have cron installed. You can do so by running crond, if it says it cant open a file, that is good. If it says that crond is not a file or directory, that means you have to install it.")
-    print("Ok, now lets create a bash script to be run periodically. Go to /opt/minecraft/tools and create a backup.sh file.")
-    print("inside it, write the following lines:")
-    print("""
+    input("""So you want to setup auto backups? Let's go!
+First make sure you have cron installed. You can do so by running crond, if it says it cant open a file, that is good. If it says that crond is not a file or directory, that means you have to install it.
+Ok, now lets create a bash script to be run periodically. Go to /opt/minecraft/tools and create a backup.sh file.
+inside it, write the following lines:
+    
 systemctl stop minecraft
 mkdir /opt/minecraft/server/backup/$(date)
 cp /opt/minecraft/server/level /opt/minecraft/server/backup/$(date)
 systemctl start minecraft
-    """)
-    print("this will stop and restart the server, as without doing that, some chunks may be saved badly.")
-    print("now use chmod +x backup.sh to make it executable.")
-    input("press enter when you  have done the instructions above.")
-    print("""
-Ok, now lets create a cronjob, to do that, simply copy the backup.sh file into /etc/crond.daily, and make sure it is executeable.""")
+    
+this will stop and restart the server, as without doing that, some chunks may be saved badly.
+now use chmod +x backup.sh to make it executable.
+press enter when you  have done the instructions above.
+ok, now lets create a cronjob, to do that, simply link the backup.sh file into /etc/crond.daily with the command ln -s backups.sh /etc/crond.daily.""")
 
 
 def bold(a):
