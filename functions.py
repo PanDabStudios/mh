@@ -11,7 +11,7 @@ def crUser():
 
 def crFolders():
     subprocess.run("sudo su minecraft -c 'mkdir -p ~/{backups,tools,server}'", shell=True)
-    subprocess.run("sudo chmod 777 /opt/minecraft", shell=True)
+    subprocess.run("sudo chmod -R 777 /opt/minecraft", shell=True)
     return 0
 
 def mcrcon():
